@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: GlobalConfig
   m_EditorClassIdentifier: 
   GridSizeAbsolute: 10
-  GridColumns: 5
-  CellSize: 2
+  GridColumns: 15
+  CellSize: 0.6666667

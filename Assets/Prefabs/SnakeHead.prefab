@@ -73,7 +73,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -97,10 +97,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 269e7751bd32346d59a7122f6700e18c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SnakeTail: {fileID: 708687365467983688, guid: 8c44d02bbe5194cbf8ed6e3772bcd66a, type: 3}
   UpKey: 273
   DownKey: 274
   LeftKey: 276
   RightKey: 275
   Config: {fileID: 11400000, guid: f737c7b5ee31f48fc80df6421b101863, type: 2}
   GameOverSceneName: GameOver
-  TickInterval: 1

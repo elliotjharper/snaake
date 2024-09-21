@@ -54,4 +54,14 @@ public class SnakeTail : MonoBehaviour
 
         return false;
     }
+
+    public int GetScore(int current = 0)
+    {
+        if (Child != null)
+        {
+            return Child.GetScore(current + 1);
+        }
+
+        return current + 1;
+    }
 }

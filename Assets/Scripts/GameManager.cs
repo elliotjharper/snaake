@@ -1,4 +1,6 @@
+using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -7,6 +9,8 @@ public class GameManager : MonoBehaviour
     public GameObject Player1Template;
     public GameObject Player2Template;
     public GameObject Food;
+    public TextMeshProUGUI Player1Score;
+    public TextMeshProUGUI Player2Score;
     #endregion
 
     public GlobalConfig Config;
@@ -60,13 +64,25 @@ public class GameManager : MonoBehaviour
 
     void Tick()
     {
+        if (player1.nextBearing == Vector3.zero || player2.nextBearing == Vector3.zero)
+        {
+            return;
+        }
+
         if (player1.MoveOnTick(foodInstance.transform.position))
         {
             RepositionFood();
+            Player1Score.text = player1.GetScore().ToString();
         }
         if (player2.MoveOnTick(foodInstance.transform.position))
         {
             RepositionFood();
+            Player2Score.text = player2.GetScore().ToString();
+        }
+
+        if (player1.dead && player2.dead)
+        {
+            SceneManager.LoadScene("GameOver");
         }
     }
 

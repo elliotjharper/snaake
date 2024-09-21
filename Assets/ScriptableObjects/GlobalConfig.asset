@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7203ebeccab2f40898f8a4f51b5d7e0f, type: 3}
   m_Name: GlobalConfig
   m_EditorClassIdentifier: 
-  GridSize: 3
-  CellSize: 5
+  GridSize: 9
+  CellSize: 3

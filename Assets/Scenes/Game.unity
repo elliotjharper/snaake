@@ -246,6 +246,8 @@ MonoBehaviour:
   Square: {fileID: 8390500252719001830, guid: 1c9d64ff687b24741b89a918f4d6a87a, type: 3}
   PlayerHead: {fileID: 708687365467983688, guid: ec025c36e59824075a74ea008ecb9ac7, type: 3}
   Config: {fileID: 11400000, guid: f737c7b5ee31f48fc80df6421b101863, type: 2}
+  foodPosition: {x: 0, y: 0, z: 0}
+  TickInterval: 0.2
 --- !u!4 &1803328575
 Transform:
   m_ObjectHideFlags: 0

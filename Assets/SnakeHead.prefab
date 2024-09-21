@@ -103,3 +103,4 @@ MonoBehaviour:
   RightKey: 275
   Config: {fileID: 11400000, guid: f737c7b5ee31f48fc80df6421b101863, type: 2}
   GameOverSceneName: GameOver
+  TickInterval: 1

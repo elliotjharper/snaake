@@ -4,7 +4,8 @@ public class GameManager : MonoBehaviour
 {
     #region GameObjects
     public GameObject Square;
-    public GameObject PlayerHead;
+    public GameObject Player1Template;
+    public GameObject Player2Template;
     public GameObject Food;
     #endregion
 
@@ -12,9 +13,8 @@ public class GameManager : MonoBehaviour
     public float TickInterval;
     float timeSinceLastTick = 0;
     PlayerHead player1;
+    PlayerHead player2;
     GameObject foodInstance;
-
-    Vector3 foodPosition;
 
     // Start is called before the first frame update
     void Start()
@@ -33,9 +33,13 @@ public class GameManager : MonoBehaviour
         }
 
         //create the player
-        var player = Instantiate(PlayerHead, position: GetRandomPosition(), Quaternion.identity, transform);
-        player.transform.localScale = new Vector3(Config.CellSize, Config.CellSize);
-        player1 = player.GetComponent<PlayerHead>();
+        var player1GameObject = Instantiate(Player1Template, position: GetRandomPosition(), Quaternion.identity, transform);
+        player1GameObject.transform.localScale = new Vector3(Config.CellSize, Config.CellSize);
+        player1 = player1GameObject.GetComponent<PlayerHead>();
+
+        var player2GameObject = Instantiate(Player2Template, position: GetRandomPosition(), Quaternion.identity, transform);
+        player2GameObject.transform.localScale = new Vector3(Config.CellSize, Config.CellSize);
+        player2 = player2GameObject.GetComponent<PlayerHead>();
 
         // Create the food
         foodInstance = Instantiate(Food, position: GetRandomPosition(), Quaternion.identity, transform);
@@ -57,6 +61,10 @@ public class GameManager : MonoBehaviour
     void Tick()
     {
         if (player1.MoveOnTick(foodInstance.transform.position))
+        {
+            RepositionFood();
+        }
+        if (player2.MoveOnTick(foodInstance.transform.position))
         {
             RepositionFood();
         }

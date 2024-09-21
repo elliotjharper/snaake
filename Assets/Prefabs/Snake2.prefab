@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6184798489003534344}
   - component: {fileID: -4246826005116255059}
   m_Layer: 0
-  m_Name: SnakeHead
+  m_Name: Snake2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -75,7 +75,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -98,9 +98,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SnakeTail: {fileID: 708687365467983688, guid: 8c44d02bbe5194cbf8ed6e3772bcd66a, type: 3}
-  UpKey: 273
-  DownKey: 274
-  LeftKey: 276
-  RightKey: 275
+  UpKey: 119
+  DownKey: 115
+  LeftKey: 97
+  RightKey: 100
   Config: {fileID: 11400000, guid: f737c7b5ee31f48fc80df6421b101863, type: 2}
   GameOverSceneName: GameOver

@@ -5,6 +5,7 @@ using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Relay;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public enum LobbyState
 {
@@ -62,12 +63,18 @@ public class LobbyManager : MonoBehaviour
         Debug.LogError("Hosting game...");
 
         var a = await RelayService.Instance.CreateAllocationAsync(2);
-        StatusTb.text += " " + await RelayService.Instance.GetJoinCodeAsync(a.AllocationId);
+        var code = await RelayService.Instance.GetJoinCodeAsync(a.AllocationId);
+        StatusTb.text += " " + code;
 
         var transport = FindObjectOfType<UnityTransport>();
         transport.SetHostRelayData(a.RelayServer.IpV4, (ushort)a.RelayServer.Port, a.AllocationIdBytes, a.Key, a.ConnectionData);
 
         NetworkManager.Singleton.StartHost();
+
+        NetworkManager.Singleton.OnClientConnectedCallback += (_) =>
+        {
+            SceneManager.LoadScene("Game");
+        };
     }
 
     public async void JoinGame()
@@ -81,5 +88,9 @@ public class LobbyManager : MonoBehaviour
         transport.SetClientRelayData(a.RelayServer.IpV4, (ushort)a.RelayServer.Port, a.AllocationIdBytes, a.Key, a.ConnectionData, a.HostConnectionData);
 
         NetworkManager.Singleton.StartClient();
+
+        Debug.Log(NetworkManager.Singleton.IsConnectedClient);
+
+        SceneManager.LoadScene("Game");
     }
 }

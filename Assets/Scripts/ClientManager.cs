@@ -53,23 +53,24 @@ public class ClientManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        var bearing = Store.Players.Value[NetworkManager.Singleton.IsHost ? 0 : 1].Bearing;
+        var playerId = NetworkManager.Singleton.IsHost ? 0 : 1;
+        var bearing = Store.Players.Value[playerId].Bearing;
 
         if (Input.GetKey(KeyCode.W) && bearing != Vector3.down)
         {
-            SendBearing(Vector3.up);
+            SendBearing(Vector3.up, playerId);
         }
         else if (Input.GetKey(KeyCode.S) && bearing != Vector3.up)
         {
-            SendBearing(Vector3.down);
+            SendBearing(Vector3.down, playerId);
         }
         else if (Input.GetKey(KeyCode.A) && bearing != Vector3.right)
         {
-            SendBearing(Vector3.left);
+            SendBearing(Vector3.left, playerId);
         }
         else if (Input.GetKey(KeyCode.D) && bearing != Vector3.left)
         {
-            SendBearing(Vector3.right);
+            SendBearing(Vector3.right, playerId);
         }
 
 
@@ -114,10 +115,10 @@ public class ClientManager : MonoBehaviour
         return new Vector3((x + 0.5f) * Config.CellSize, (y + 0.5f) * Config.CellSize);
     }
 
-    void SendBearing(Vector3 bearing)
+    void SendBearing(Vector3 bearing, int playerId)
     {
         using FastBufferWriter writer = new(256, Unity.Collections.Allocator.Temp);
-        writer.WriteValueSafe(bearing);
+        writer.WriteValueSafe(new PlayerBearingMessage() { PlayerId = playerId, Bearing = bearing });
         NetworkManager.Singleton.CustomMessagingManager.SendNamedMessage("NextBearing", NetworkManager.ServerClientId, writer);
     }
 }

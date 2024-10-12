@@ -56,7 +56,7 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
-    private async void HostGame()
+    public async void HostGame()
     {
         ChangeState(LobbyState.HostWaiting);
         Debug.LogError("Hosting game...");
@@ -70,7 +70,7 @@ public class LobbyManager : MonoBehaviour
         NetworkManager.Singleton.StartHost();
     }
 
-    private async void JoinGame()
+    public async void JoinGame()
     {
         ChangeState(LobbyState.ClientJoining);
         Debug.LogError("Joining game...");

@@ -4,6 +4,7 @@ using UnityEngine;
 public class PlayerData
 {
     public int Id;
+    public bool Alive;
     public Vector3 HeadPosition;
     public List<Vector3> SegmentPositions;
     public int Score;

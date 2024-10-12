@@ -9,7 +9,7 @@ public class Player : NetworkBehaviour
 
     void Start()
     {
-        PlayerId = IsHost ? 0 : 1;
+        PlayerId = IsOwner && IsHost ? 0 : 1;
     }
 
     // Update is called once per frame

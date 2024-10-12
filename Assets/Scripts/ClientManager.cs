@@ -17,8 +17,8 @@ public class ClientManager : NetworkBehaviour
     public TextMeshProUGUI Player1Score;
     public TextMeshProUGUI Player2Score;
 
-    List<GameObject> playersInstances;
-    List<GameObject> segmentInstances;
+    List<GameObject> playersInstances = new();
+    List<GameObject> segmentInstances = new();
     int currentSegmentsIndex;
     GameObject foodInstance;
 

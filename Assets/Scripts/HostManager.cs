@@ -1,12 +1,6 @@
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-
-// public enum HostState {
-//     WaitingForPlayers,
-
-
-// }
 
 public class HostManager : MonoBehaviour
 {
@@ -20,7 +14,36 @@ public class HostManager : MonoBehaviour
     void Awake()
     {
         // startup the data store
+        Store.GameOver.Value = false;
+        Store.GameSettings.Value = new GameSettings()
+        {
+            GridSize = Config.CellSize
+        };
 
+        var player1 = new PlayerData()
+        {
+            HeadPosition = Config.GetRandomPosition(),
+            Id = 0,
+            Colour = new Color32(255, 0, 0, 255)
+        };
+        var player2 = new PlayerData()
+        {
+            HeadPosition = Config.GetRandomPosition(),
+            Id = 1,
+            Colour = new Color32(0, 0, 255, 255)
+        };
+        while (CollidesWithPlayer(player1, player2.HeadPosition, true))
+        {
+            player2.HeadPosition = Config.GetRandomPosition();
+        }
+
+        Store.Players.Value = new List<PlayerData>() { player1, player2 };
+
+        Store.FoodPosition.Value = Config.GetRandomPosition();
+        while (CollidesWithAnyPlayer(Store.FoodPosition.Value))
+        {
+            Store.FoodPosition.Value = Config.GetRandomPosition();
+        }
     }
 
     // Update is called once per frame
@@ -66,7 +89,9 @@ public class HostManager : MonoBehaviour
 
             player.HeadPosition = newPosition;
 
-            // TODO: make new array instead of mutating for network
+            // create a new list as we need to be pure
+            player.SegmentPositions = new List<Vector3>(player.SegmentPositions);
+
             player.SegmentPositions.Insert(0, player.HeadPosition);
 
             if (!CollidesWithFood(newPosition))

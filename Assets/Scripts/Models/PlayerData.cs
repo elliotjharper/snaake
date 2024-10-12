@@ -5,13 +5,13 @@ using UnityEngine;
 public class PlayerData : IEquatable<PlayerData>
 {
     public int Id;
-    public bool Alive;
+    public bool Alive = false;
     public Vector3 HeadPosition;
-    public List<Vector3> SegmentPositions;
-    public int Score;
+    public List<Vector3> SegmentPositions = new List<Vector3>();
+    public int Score = 0;
     public Vector3 Bearing;
     public Vector3 NextBearing;
-    public int PlayerSpeed;
+    //public int PlayerSpeed;
     public Color32 Colour;
 
     public bool Equals(PlayerData other)
@@ -23,7 +23,7 @@ public class PlayerData : IEquatable<PlayerData>
         if (Score != other.Score) return false;
         if (Bearing != other.Bearing) return false;
         if (NextBearing != other.NextBearing) return false;
-        if (PlayerSpeed != other.PlayerSpeed) return false;
+        //if (PlayerSpeed != other.PlayerSpeed) return false;
         if (Colour.ToString() != other.Colour.ToString()) return false;
 
         return true;

@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using Unity.Netcode;
+using UnityEngine.SceneManagement;
+using System.Linq;
 
 public class ClientManager : NetworkBehaviour
 {
@@ -52,6 +54,11 @@ public class ClientManager : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Store.GameOver.Value)
+        {
+            SceneManager.LoadScene("GameOver");
+        }
+
         foodInstance.transform.position = Store.FoodPosition.Value;
 
         Player1Score.text = Store.Players.Value[0].Score.ToString();
@@ -60,7 +67,7 @@ public class ClientManager : NetworkBehaviour
         currentSegmentsIndex = 0;
         segmentInstances.ForEach(segment => segment.SetActive(false));
 
-        foreach (var playerData in Store.Players.Value)
+        foreach (var playerData in Store.Players.Value.Where(p => p.Alive))
         {
             var player = playersInstances[playerData.Id];
             player.transform.position = playerData.HeadPosition;

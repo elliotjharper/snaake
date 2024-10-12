@@ -1,5 +1,6 @@
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 // public enum HostState {
 //     WaitingForPlayers,
@@ -78,7 +79,7 @@ public class HostManager : MonoBehaviour
     {
         foreach (var player in Store.Players.Value.Where(p => p.Alive))
         {
-            if (IsOutsideGrid(player.HeadPosition) || false)
+            if (IsOutsideGrid(player.HeadPosition) || CollidesWithSelfOrOtherPlayers(player))
             {
                 player.Alive = false;
             }
@@ -87,12 +88,23 @@ public class HostManager : MonoBehaviour
 
     private void HandleFoodConsumption()
     {
-        //
+        foreach (var player in Store.Players.Where(p => p.Alive))
+        {
+            if (player.HeadPosition == Store.FoodPosition)
+            {
+                player.Score++;
+
+                while (CollidesWithAnyPlayer(Store.FoodPosition))
+                {
+                    Store.FoodPosition = Config.GetRandomPosition();
+                }
+            }
+        }
     }
 
     private void HandleGameOver()
     {
-        //
+        SceneManager.LoadScene("GameOver");
     }
 
     private bool CollidesWithFood(Vector3 position)
@@ -116,8 +128,45 @@ public class HostManager : MonoBehaviour
         return false;
     }
 
-    private bool CollidesWithAnyPlayers()
+    private bool CollidesWithPlayer(PlayerData target, Vector3 arrow, bool checkHead)
     {
+        if (checkHead && target.HeadPosition == arrow)
+        {
+            return true;
+        }
+
+        if (target.SegmentPositions.Contains(arrow))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool CollidesWithSelfOrOtherPlayers(PlayerData movingPlayer)
+    {
+        foreach (var player in Store.Players)
+        {
+            var isMovingPlayer = player.Id == movingPlayer.Id;
+            if (CollidesWithPlayer(player, movingPlayer.HeadPosition, !isMovingPlayer))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private bool CollidesWithAnyPlayer(Vector3 targetPosition)
+    {
+        foreach (var player in Store.Players)
+        {
+            if (CollidesWithPlayer(player, targetPosition, true))
+            {
+                return true;
+            }
+        }
+
         return false;
     }
 }

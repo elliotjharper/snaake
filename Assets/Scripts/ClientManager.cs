@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using Unity.Netcode;
 using UnityEngine.SceneManagement;
 using System.Linq;
+using Unity.Netcode;
 
-public class ClientManager : NetworkBehaviour
+public class ClientManager : MonoBehaviour
 {
     public DataStore Store;
     public GlobalConfig Config;
@@ -42,7 +42,6 @@ public class ClientManager : NetworkBehaviour
             var player = Instantiate(PlayerPrefab, position: playerData.HeadPosition, Quaternion.identity, transform);
             player.transform.localScale = new Vector3(Config.CellSize, Config.CellSize);
             player.GetComponent<SpriteRenderer>().color = playerData.Colour;
-            player.GetComponent<Player>().Store = Store;
             playersInstances.Add(player);
         }
 
@@ -54,6 +53,26 @@ public class ClientManager : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
+        var bearing = Store.Players.Value[NetworkManager.Singleton.IsHost ? 0 : 1].Bearing;
+
+        if (Input.GetKey(KeyCode.W) && bearing != Vector3.down)
+        {
+            SendBearing(Vector3.up);
+        }
+        else if (Input.GetKey(KeyCode.S) && bearing != Vector3.up)
+        {
+            SendBearing(Vector3.down);
+        }
+        else if (Input.GetKey(KeyCode.A) && bearing != Vector3.right)
+        {
+            SendBearing(Vector3.left);
+        }
+        else if (Input.GetKey(KeyCode.D) && bearing != Vector3.left)
+        {
+            SendBearing(Vector3.right);
+        }
+
+
         if (Store.GameOver.Value)
         {
             SceneManager.LoadScene("GameOver");
@@ -93,5 +112,12 @@ public class ClientManager : NetworkBehaviour
     Vector3 GridToWorldPosition(int x, int y)
     {
         return new Vector3((x + 0.5f) * Config.CellSize, (y + 0.5f) * Config.CellSize);
+    }
+
+    void SendBearing(Vector3 bearing)
+    {
+        using FastBufferWriter writer = new(256, Unity.Collections.Allocator.Temp);
+        writer.WriteValueSafe(bearing);
+        NetworkManager.Singleton.CustomMessagingManager.SendNamedMessage("NextBearing", NetworkManager.ServerClientId, writer);
     }
 }

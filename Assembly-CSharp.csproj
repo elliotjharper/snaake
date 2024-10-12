@@ -69,7 +69,6 @@
     <Compile Include="Assets\LobbyManager.cs" />
     <Compile Include="Assets\Scripts\GoToSceneScript.cs" />
     <Compile Include="Assets\Scripts\DataStore.cs" />
-    <Compile Include="Assets\Scripts\Player.cs" />
     <Compile Include="Assets\Scripts\GlobalConfig.cs" />
     <Compile Include="Assets\Scripts\ClientManager.cs" />
     <Compile Include="Assets\Scripts\Models\PlayerData.cs" />

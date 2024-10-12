@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Serializable]
 public class PlayerData : IEquatable<PlayerData>
 {
     public int Id;

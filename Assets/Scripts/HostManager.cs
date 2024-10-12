@@ -88,15 +88,15 @@ public class HostManager : MonoBehaviour
 
     private void HandleFoodConsumption()
     {
-        foreach (var player in Store.Players.Where(p => p.Alive))
+        foreach (var player in Store.Players.Value.Where(p => p.Alive))
         {
-            if (player.HeadPosition == Store.FoodPosition)
+            if (player.HeadPosition == Store.FoodPosition.Value)
             {
                 player.Score++;
 
-                while (CollidesWithAnyPlayer(Store.FoodPosition))
+                while (CollidesWithAnyPlayer(Store.FoodPosition.Value))
                 {
-                    Store.FoodPosition = Config.GetRandomPosition();
+                    Store.FoodPosition.Value = Config.GetRandomPosition();
                 }
             }
         }
@@ -145,7 +145,7 @@ public class HostManager : MonoBehaviour
 
     private bool CollidesWithSelfOrOtherPlayers(PlayerData movingPlayer)
     {
-        foreach (var player in Store.Players)
+        foreach (var player in Store.Players.Value)
         {
             var isMovingPlayer = player.Id == movingPlayer.Id;
             if (CollidesWithPlayer(player, movingPlayer.HeadPosition, !isMovingPlayer))
@@ -159,7 +159,7 @@ public class HostManager : MonoBehaviour
 
     private bool CollidesWithAnyPlayer(Vector3 targetPosition)
     {
-        foreach (var player in Store.Players)
+        foreach (var player in Store.Players.Value)
         {
             if (CollidesWithPlayer(player, targetPosition, true))
             {

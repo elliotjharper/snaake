@@ -74,7 +74,6 @@ public class HostManager : MonoBehaviour
     private bool AllPlayersReady()
     {
         return Store.Players.Value.All(p => p.NextBearing != Vector3.zero);
-        // need to propagate the NextBearing into Bearing
         // need to do some other shit larry said
     }
 

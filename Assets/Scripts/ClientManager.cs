@@ -17,8 +17,8 @@ public class ClientManager : NetworkBehaviour
     public TextMeshProUGUI Player1Score;
     public TextMeshProUGUI Player2Score;
 
-    List<GameObject> playersInstances;
-    List<GameObject> segmentInstances;
+    List<GameObject> playersInstances = new();
+    List<GameObject> segmentInstances = new();
     int currentSegmentsIndex;
     GameObject foodInstance;
 
@@ -39,11 +39,13 @@ public class ClientManager : NetworkBehaviour
 
         foreach (var playerData in Store.Players.Value)
         {
-            var player = Instantiate(PlayerPrefab, position: playerData.HeadPosition, Quaternion.identity, transform);
-            player.transform.localScale = new Vector3(Config.CellSize, Config.CellSize);
-            player.GetComponent<SpriteRenderer>().color = playerData.Colour;
-            player.GetComponent<Player>().Store = Store;
-            playersInstances.Add(player);
+            var playerGameObject = Instantiate(PlayerPrefab, position: playerData.HeadPosition, Quaternion.identity, transform);
+            playerGameObject.transform.localScale = new Vector3(Config.CellSize, Config.CellSize);
+            playerGameObject.GetComponent<SpriteRenderer>().color = playerData.Colour;
+            var playerComponent = playerGameObject.GetComponent<Player>();
+            playerComponent.Store = Store;
+            playerComponent.PlayerId = playerData.Id;
+            playersInstances.Add(playerGameObject);
         }
 
         // Create the food

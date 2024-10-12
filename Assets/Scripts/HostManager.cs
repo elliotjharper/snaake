@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Netcode;
 using UnityEngine;
 
 public class HostManager : MonoBehaviour
@@ -44,6 +45,8 @@ public class HostManager : MonoBehaviour
         {
             Store.FoodPosition.Value = Config.GetRandomPosition();
         }
+
+        NetworkManager.Singleton.CustomMessagingManager.RegisterNamedMessageHandler("NextBearing", HandlePlayerBearingMessage);
     }
 
     // Update is called once per frame
@@ -74,7 +77,6 @@ public class HostManager : MonoBehaviour
     private bool AllPlayersReady()
     {
         return Store.Players.Value.All(p => p.NextBearing != Vector3.zero);
-        // need to propagate the NextBearing into Bearing
         // need to do some other shit larry said
     }
 
@@ -198,5 +200,27 @@ public class HostManager : MonoBehaviour
         }
 
         return false;
+    }
+
+    private void HandlePlayerBearingMessage(ulong senderClientId, FastBufferReader reader)
+    {
+        PlayerBearingMessage playerBearingMessage;
+        reader.ReadValue(out playerBearingMessage);
+        Store.Players.Value[playerBearingMessage.PlayerId].NextBearing = playerBearingMessage.Bearing;
+    }
+}
+
+
+public struct PlayerBearingMessage : INetworkSerializable
+{
+    //public int EventId;
+    public Vector3 Bearing;
+    public int PlayerId;
+
+    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+    {
+        //serializer.SerializeValue(ref EventId);
+        serializer.SerializeValue(ref Bearing);
+        serializer.SerializeValue(ref PlayerId);
     }
 }

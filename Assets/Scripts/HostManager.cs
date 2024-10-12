@@ -46,17 +46,13 @@ public class HostManager : MonoBehaviour
         HandlePlayerCrashes();
         HandleFoodConsumption();
         HandleGameOver();
-
-        // has anyone who is alive died
-
-        // if anyone is on top of the food
-        // award the player a score
-        // move the food to a new location not colliding 
     }
 
     private bool AllPlayersReady()
     {
         return Store.Players.Value.All(p => p.NextBearing != Vector3.zero);
+        // need to propagate the NextBearing into Bearing
+        // need to do some other shit larry said
     }
 
     private void MoveAllLivingPlayers()
@@ -64,9 +60,14 @@ public class HostManager : MonoBehaviour
         foreach (var player in Store.Players.Value.Where(p => p.Alive))
         {
             player.Bearing = player.NextBearing;
+
+            var oldPosition = player.HeadPosition;
             var newPosition = transform.position + player.NextBearing * Config.CellSize;
 
-            player.SegmentPositions.Insert(0, newPosition);
+            player.HeadPosition = newPosition;
+
+            // TODO: make new array instead of mutating for network
+            player.SegmentPositions.Insert(0, player.HeadPosition);
 
             if (!CollidesWithFood(newPosition))
             {
@@ -104,7 +105,11 @@ public class HostManager : MonoBehaviour
 
     private void HandleGameOver()
     {
-        SceneManager.LoadScene("GameOver");
+        if (Store.Players.Value.All(p => !p.Alive))
+        {
+            Store.GameOver.Value = true;
+            gameObject.SetActive(false);
+        }
     }
 
     private bool CollidesWithFood(Vector3 position)

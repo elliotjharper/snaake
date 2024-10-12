@@ -16,8 +16,8 @@ public class GameManager : MonoBehaviour
     public GlobalConfig Config;
     public float TickInterval;
     float timeSinceLastTick = 0;
-    PlayerHead player1;
-    PlayerHead player2;
+    GameObject player1;
+    GameObject player2;
     GameObject foodInstance;
 
     // Start is called before the first frame update
@@ -39,11 +39,11 @@ public class GameManager : MonoBehaviour
         //create the player
         var player1GameObject = Instantiate(Player1Template, position: GetRandomPosition(), Quaternion.identity, transform);
         player1GameObject.transform.localScale = new Vector3(Config.CellSize, Config.CellSize);
-        player1 = player1GameObject.GetComponent<PlayerHead>();
+        player1 = player1GameObject;
 
         var player2GameObject = Instantiate(Player2Template, position: GetRandomPosition(), Quaternion.identity, transform);
         player2GameObject.transform.localScale = new Vector3(Config.CellSize, Config.CellSize);
-        player2 = player2GameObject.GetComponent<PlayerHead>();
+        player2 = player2GameObject;
 
         // Create the food
         foodInstance = Instantiate(Food, position: GetRandomPosition(), Quaternion.identity, transform);
@@ -57,34 +57,34 @@ public class GameManager : MonoBehaviour
 
         if (timeSinceLastTick >= TickInterval)
         {
-            Tick();
+            // Tick();
             timeSinceLastTick -= TickInterval;
         }
     }
 
-    void Tick()
-    {
-        if (player1.nextBearing == Vector3.zero || player2.nextBearing == Vector3.zero)
-        {
-            return;
-        }
+    // void Tick()
+    // {
+    //     if (player1.nextBearing == Vector3.zero || player2.nextBearing == Vector3.zero)
+    //     {
+    //         return;
+    //     }
 
-        if (player1.MoveOnTick(foodInstance.transform.position))
-        {
-            RepositionFood();
-            Player1Score.text = player1.GetScore().ToString();
-        }
-        if (player2.MoveOnTick(foodInstance.transform.position))
-        {
-            RepositionFood();
-            Player2Score.text = player2.GetScore().ToString();
-        }
+    //     if (player1.MoveOnTick(foodInstance.transform.position))
+    //     {
+    //         RepositionFood();
+    //         Player1Score.text = player1.GetScore().ToString();
+    //     }
+    //     if (player2.MoveOnTick(foodInstance.transform.position))
+    //     {
+    //         RepositionFood();
+    //         Player2Score.text = player2.GetScore().ToString();
+    //     }
 
-        if (player1.dead && player2.dead)
-        {
-            SceneManager.LoadScene("GameOver");
-        }
-    }
+    //     if (player1.dead && player2.dead)
+    //     {
+    //         SceneManager.LoadScene("GameOver");
+    //     }
+    // }
 
     void RepositionFood()
     {

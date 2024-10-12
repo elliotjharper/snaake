@@ -1,33 +1,30 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using Unity.Netcode;
 
-public class ClientManager : MonoBehaviour
+public class ClientManager : NetworkBehaviour
 {
-    #region GameObjects
-    public GameObject Square;
-    public GameObject Player1Template;
-    public GameObject Player2Template;
-    public GameObject Food;
+    public DataStore Store;
+    public GlobalConfig Config;
+
+    public GameObject SquarePrefab;
+    public GameObject PlayerPrefab;
+    public GameObject SegmentPrefab;
+    public GameObject FoodPrefab;
     public TextMeshProUGUI Player1Score;
     public TextMeshProUGUI Player2Score;
-    #endregion
 
-    public GlobalConfig Config;
-    public float TickInterval;
-    float timeSinceLastTick = 0;
-    PlayerHead player1;
-    PlayerHead player2;
+    List<GameObject> playersInstances;
+    List<GameObject> segmentInstances;
+    int currentSegmentsIndex;
     GameObject foodInstance;
+    int myPlayerIndex;
 
     void Start()
     {
-        // Work out when to instantiate
-        Instantiate();
-    }
+        myPlayerIndex = IsHost ? 0 : 1;
 
-    void Instantiate()
-    {
         // Calculate the cell size
         Config.CellSize = Config.GridSizeAbsolute / Config.GridColumns;
 
@@ -36,76 +33,76 @@ public class ClientManager : MonoBehaviour
         {
             for (var yIndex = 0; yIndex < Config.GridColumns; yIndex++)
             {
-                var instance = Instantiate(Square, position: GridToWorldPosition(xIndex, yIndex), Quaternion.identity, transform);
+                var instance = Instantiate(SquarePrefab, position: GridToWorldPosition(xIndex, yIndex), Quaternion.identity, transform);
                 instance.transform.localScale = new Vector3(Config.CellSize, Config.CellSize);
             }
         }
 
-        //create the player
-        var player1GameObject = Instantiate(Player1Template, position: GetRandomPosition(), Quaternion.identity, transform);
-        player1GameObject.transform.localScale = new Vector3(Config.CellSize, Config.CellSize);
-        player1 = player1GameObject.GetComponent<PlayerHead>();
-
-        var player2GameObject = Instantiate(Player2Template, position: GetRandomPosition(), Quaternion.identity, transform);
-        player2GameObject.transform.localScale = new Vector3(Config.CellSize, Config.CellSize);
-        player2 = player2GameObject.GetComponent<PlayerHead>();
+        foreach (var playerData in Store.Players)
+        {
+            var player = Instantiate(PlayerPrefab, position: playerData.HeadPosition, Quaternion.identity, transform);
+            player.transform.localScale = new Vector3(Config.CellSize, Config.CellSize);
+            player.GetComponent<SpriteRenderer>().color = playerData.Colour;
+            playersInstances.Add(player);
+        }
 
         // Create the food
-        foodInstance = Instantiate(Food, position: GetRandomPosition(), Quaternion.identity, transform);
+        foodInstance = Instantiate(FoodPrefab, position: Store.FoodPosition, Quaternion.identity, transform);
         foodInstance.transform.localScale = new Vector3(Config.CellSize * 0.6f, Config.CellSize * 0.6f);
     }
 
     // Update is called once per frame
     void Update()
     {
-        timeSinceLastTick += Time.deltaTime;
+        var bearing = Store.Players[myPlayerIndex].Bearing;
+        var nextBearing = Store.Players[myPlayerIndex].NextBearing;
 
-        if (timeSinceLastTick >= TickInterval)
+        if (Input.GetKey(KeyCode.W) && bearing != Vector3.down)
         {
-            Tick();
-            timeSinceLastTick -= TickInterval;
+            nextBearing = Vector3.up;
         }
-    }
-
-    void Tick()
-    {
-        if (player1.nextBearing == Vector3.zero || player2.nextBearing == Vector3.zero)
+        else if (Input.GetKey(KeyCode.S) && bearing != Vector3.up)
         {
-            return;
+            nextBearing = Vector3.down;
         }
-
-        if (player1.MoveOnTick(foodInstance.transform.position))
+        else if (Input.GetKey(KeyCode.A) && bearing != Vector3.right)
         {
-            RepositionFood();
-            Player1Score.text = player1.GetScore().ToString();
+            nextBearing = Vector3.left;
         }
-        if (player2.MoveOnTick(foodInstance.transform.position))
+        else if (Input.GetKey(KeyCode.D) && bearing != Vector3.left)
         {
-            RepositionFood();
-            Player2Score.text = player2.GetScore().ToString();
+            nextBearing = Vector3.right;
         }
 
-        if (player1.dead && player2.dead)
+        foodInstance.transform.position = Store.FoodPosition;
+
+        Player1Score.text = Store.Players[0].Score.ToString();
+        Player2Score.text = Store.Players[1].Score.ToString();
+
+        currentSegmentsIndex = 0;
+        segmentInstances.ForEach(segment => segment.SetActive(false));
+
+        foreach (var playerData in Store.Players)
         {
-            SceneManager.LoadScene("GameOver");
+            var player = playersInstances[playerData.Id];
+            player.transform.position = playerData.HeadPosition;
+
+            foreach (var segmentPosition in playerData.SegmentPositions)
+            {
+                if (currentSegmentsIndex >= segmentInstances.Count)
+                {
+                    var newSegment = Instantiate(SegmentPrefab);
+                    segmentInstances.Add(newSegment);
+                }
+
+                var segment = segmentInstances[currentSegmentsIndex];
+                segment.transform.position = segmentPosition;
+                segment.GetComponent<SpriteRenderer>().color = playerData.Colour;
+                segment.SetActive(true);
+
+                currentSegmentsIndex++;
+            }
         }
-    }
-
-    void RepositionFood()
-    {
-        foodInstance.transform.position = GetRandomPosition();
-    }
-
-    Vector3 GetRandomPosition()
-    {
-        var x = GetRandomGridCoordinate();
-        var y = GetRandomGridCoordinate();
-        return GridToWorldPosition(x, y);
-    }
-
-    int GetRandomGridCoordinate()
-    {
-        return Random.Range(0, Config.GridColumns - 1);
     }
 
     Vector3 GridToWorldPosition(int x, int y)

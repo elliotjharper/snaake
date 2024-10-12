@@ -55,12 +55,12 @@ public class HostManager : MonoBehaviour
 
     private bool AllPlayersReady()
     {
-        return Store.Players.All(p => p.NextBearing != Vector3.zero);
+        return Store.Players.Value.All(p => p.NextBearing != Vector3.zero);
     }
 
     private void MoveAllLivingPlayers()
     {
-        foreach (var player in Store.Players.Where(p => p.Alive))
+        foreach (var player in Store.Players.Value.Where(p => p.Alive))
         {
             player.Bearing = player.NextBearing;
             var newPosition = transform.position + player.NextBearing * Config.CellSize;
@@ -76,7 +76,7 @@ public class HostManager : MonoBehaviour
 
     private void HandlePlayerCrashes()
     {
-        foreach (var player in Store.Players.Where(p => p.Alive))
+        foreach (var player in Store.Players.Value.Where(p => p.Alive))
         {
             if (IsOutsideGrid(player.HeadPosition) || false)
             {
@@ -97,7 +97,7 @@ public class HostManager : MonoBehaviour
 
     private bool CollidesWithFood(Vector3 position)
     {
-        return Store.FoodPosition == position;
+        return Store.FoodPosition.Value == position;
     }
 
     private bool IsOutsideGrid(Vector3 position)

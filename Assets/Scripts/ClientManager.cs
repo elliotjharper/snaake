@@ -19,12 +19,9 @@ public class ClientManager : NetworkBehaviour
     List<GameObject> segmentInstances;
     int currentSegmentsIndex;
     GameObject foodInstance;
-    int myPlayerIndex;
 
     void Start()
     {
-        myPlayerIndex = IsHost ? 0 : 1;
-
         // Calculate the cell size
         Config.CellSize = Config.GridSizeAbsolute / Config.GridColumns;
 
@@ -38,51 +35,32 @@ public class ClientManager : NetworkBehaviour
             }
         }
 
-        foreach (var playerData in Store.Players)
+        foreach (var playerData in Store.Players.Value)
         {
             var player = Instantiate(PlayerPrefab, position: playerData.HeadPosition, Quaternion.identity, transform);
             player.transform.localScale = new Vector3(Config.CellSize, Config.CellSize);
             player.GetComponent<SpriteRenderer>().color = playerData.Colour;
+            player.GetComponent<Player>().Store = Store;
             playersInstances.Add(player);
         }
 
         // Create the food
-        foodInstance = Instantiate(FoodPrefab, position: Store.FoodPosition, Quaternion.identity, transform);
+        foodInstance = Instantiate(FoodPrefab, position: Store.FoodPosition.Value, Quaternion.identity, transform);
         foodInstance.transform.localScale = new Vector3(Config.CellSize * 0.6f, Config.CellSize * 0.6f);
     }
 
     // Update is called once per frame
     void Update()
     {
-        var bearing = Store.Players[myPlayerIndex].Bearing;
-        var nextBearing = Store.Players[myPlayerIndex].NextBearing;
+        foodInstance.transform.position = Store.FoodPosition.Value;
 
-        if (Input.GetKey(KeyCode.W) && bearing != Vector3.down)
-        {
-            nextBearing = Vector3.up;
-        }
-        else if (Input.GetKey(KeyCode.S) && bearing != Vector3.up)
-        {
-            nextBearing = Vector3.down;
-        }
-        else if (Input.GetKey(KeyCode.A) && bearing != Vector3.right)
-        {
-            nextBearing = Vector3.left;
-        }
-        else if (Input.GetKey(KeyCode.D) && bearing != Vector3.left)
-        {
-            nextBearing = Vector3.right;
-        }
-
-        foodInstance.transform.position = Store.FoodPosition;
-
-        Player1Score.text = Store.Players[0].Score.ToString();
-        Player2Score.text = Store.Players[1].Score.ToString();
+        Player1Score.text = Store.Players.Value[0].Score.ToString();
+        Player2Score.text = Store.Players.Value[1].Score.ToString();
 
         currentSegmentsIndex = 0;
         segmentInstances.ForEach(segment => segment.SetActive(false));
 
-        foreach (var playerData in Store.Players)
+        foreach (var playerData in Store.Players.Value)
         {
             var player = playersInstances[playerData.Id];
             player.transform.position = playerData.HeadPosition;

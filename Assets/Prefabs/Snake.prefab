@@ -10,7 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6540498980495551150}
   - component: {fileID: 6184798489003534344}
-  - component: {fileID: -4246826005116255059}
+  - component: {fileID: 5816356082593958443}
+  - component: {fileID: 5492354407221691960}
   m_Layer: 0
   m_Name: Snake
   m_TagString: Untagged
@@ -85,7 +86,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &-4246826005116255059
+--- !u!114 &5816356082593958443
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -94,13 +95,29 @@ MonoBehaviour:
   m_GameObject: {fileID: 708687365467983688}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 269e7751bd32346d59a7122f6700e18c, type: 3}
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SnakeTail: {fileID: 708687365467983688, guid: 8c44d02bbe5194cbf8ed6e3772bcd66a, type: 3}
-  UpKey: 273
-  DownKey: 274
-  LeftKey: 276
-  RightKey: 275
-  Config: {fileID: 11400000, guid: f737c7b5ee31f48fc80df6421b101863, type: 2}
-  GameOverSceneName: GameOver
+  GlobalObjectIdHash: 0
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+--- !u!114 &5492354407221691960
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 708687365467983688}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a10f1998500dceb4a89d668089ba9951, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Store: {fileID: 0}
+  PlayerId: 0

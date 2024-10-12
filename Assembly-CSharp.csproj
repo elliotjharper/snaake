@@ -68,8 +68,10 @@
     <Compile Include="Assets/Scripts/SnakeTail.cs" />
     <Compile Include="Assets/Scripts/GameManager.cs" />
     <Compile Include="Assets/Scripts/GlobalConfig.cs" />
+    <Compile Include="Assets/Scripts/HostManager.cs" />
     <Compile Include="Assets/Scripts/Models/PlayerData.cs" />
     <Compile Include="Assets/Scripts/Models/GameSettings.cs" />
+    <Compile Include="Assets/LobbyManager.cs" />
     <Compile Include="Assets/Scripts/GoToSceneScript.cs" />
     <Compile Include="Assets/Scripts/PlayerHead.cs" />
   </ItemGroup>

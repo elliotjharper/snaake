@@ -1,10 +1,9 @@
-using System;
 using System.Collections.Generic;
-using System.Numerics;
+using UnityEngine;
 
 public class DataStore
 {
-    public Vector2 FoodPosition;
+    public Vector3 FoodPosition;
     public List<PlayerData> Players;
     public GameSettings GameSettings;
 }

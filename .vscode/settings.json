@@ -56,6 +56,6 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Snaake.sln",
+    "dotnet.defaultSolution": "snaake.sln",
     "editor.formatOnSave": true
 }

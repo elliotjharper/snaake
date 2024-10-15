@@ -1,9 +1,11 @@
 using TMPro;
+
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Relay;
+
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -48,7 +50,10 @@ public class LobbyManager : MonoBehaviour
 
             case LobbyState.HostWaiting:
             case LobbyState.ClientJoining:
-                StatusTb.text = state == LobbyState.HostWaiting ? "Waiting for players..." : "Joining session...";
+                StatusTb.text =
+                    state == LobbyState.HostWaiting ?
+                    "Starting session..." :
+                    "Joining session...";
                 ModeSelectGroup.SetActive(false);
                 StatusGroup.SetActive(true);
                 return;
@@ -59,11 +64,12 @@ public class LobbyManager : MonoBehaviour
     public async void HostGame()
     {
         ChangeState(LobbyState.HostWaiting);
-        Debug.LogError("Hosting game...");
+        Debug.Log("Hosting game...");
 
         var a = await RelayService.Instance.CreateAllocationAsync(2);
         var code = await RelayService.Instance.GetJoinCodeAsync(a.AllocationId);
-        StatusTb.text += " " + code;
+        StatusTb.text = $"Hosting session: {code} (copied to clipboard)";
+        ClipboardUtility.CopyToClipboard(code);
 
         var transport = FindObjectOfType<UnityTransport>();
         transport.SetHostRelayData(a.RelayServer.IpV4, (ushort)a.RelayServer.Port, a.AllocationIdBytes, a.Key, a.ConnectionData);

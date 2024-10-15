@@ -589,7 +589,7 @@ MonoBehaviour:
   m_HideSoftKeyboard: 0
   m_CharacterValidation: 0
   m_RegexValue: 
-  m_GlobalPointSize: 14
+  m_GlobalPointSize: 100
   m_CharacterLimit: 0
   m_OnEndEdit:
     m_PersistentCalls:
@@ -762,7 +762,7 @@ MonoBehaviour:
   NetworkConfig:
     ProtocolVersion: 0
     NetworkTransport: {fileID: 270831733}
-    PlayerPrefab: {fileID: 0}
+    PlayerPrefab: {fileID: 3816786126531997601, guid: 7cade61431afa2845b712261e57d7a1a, type: 3}
     Prefabs:
       NetworkPrefabsLists:
       - {fileID: 11400000, guid: b425cc53bd7fbfb4486f6763a14236f2, type: 2}

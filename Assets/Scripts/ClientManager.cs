@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using TMPro;
+
 using Unity.Netcode;
+
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -102,7 +105,7 @@ public class ClientManager : NetworkBehaviour
         currentSegmentsIndex = 0;
         segmentInstances.ForEach(segment => segment.SetActive(false));
 
-        Debug.Log(Store.Players.Value[0].Id.ToString() + Store.Players.Value[0].HeadPosition.ToString());
+        //Debug.Log(Store.Players.Value[0].Id.ToString() + Store.Players.Value[0].HeadPosition.ToString());
 
         foreach (var playerData in Store.Players.Value.Where(p => p.Alive))
         {
@@ -135,5 +138,10 @@ public class ClientManager : NetworkBehaviour
     void SendBearing(Vector3 bearing, int playerId)
     {
         HostManager.SetPlayerBearingServerRpc(new PlayerBearing() { PlayerId = playerId, Bearing = bearing });
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        Debug.Log($"ClientManager - OnNetworkSpawn - IsHost={NetworkManager.Singleton.IsHost}");
     }
 }

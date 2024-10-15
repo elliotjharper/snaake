@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+
 using Unity.Netcode;
+
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -14,6 +16,8 @@ public class HostManager : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        Debug.Log($"HostManager - OnNetworkSpawn - IsHost={NetworkManager.Singleton.IsHost}");
+        return;
         var clientManagers = FindObjectsByType<ClientManager>(FindObjectsSortMode.None);
 
         foreach (var clientManager in clientManagers)
@@ -28,6 +32,7 @@ public class HostManager : NetworkBehaviour
         if (!NetworkManager.Singleton.IsHost) return;
 
         // startup the data store
+        // Errors here: "Are you modifying a NetworkVariable before the NetworkObject is spawned?"
         Store.GameSettings.Value = new GameSettings()
         {
             GridSize = Config.CellSize

@@ -1,0 +1,44 @@
+# top-most EditorConfig file
+root = true
+
+# C# files
+[*.cs]
+# Indentation style: use spaces instead of tabs
+indent_style = space
+# Indentation size: 4 spaces
+indent_size = 4
+# Tab width: 4 spaces
+tab_width = 4
+# End-of-line character: use LF
+end_of_line = lf
+# Character encoding: use UTF-8
+charset = utf-8
+# Trim trailing whitespace on save
+trim_trailing_whitespace = true
+# Insert final newline at end of file
+insert_final_newline = true
+
+# Organize usings inside and outside namespaces
+dotnet_sort_system_directives_first = true
+dotnet_separate_import_directive_groups = true
+
+# C# specific code style
+csharp_new_line_before_open_brace = all
+csharp_new_line_between_query_expression_clauses = true
+csharp_indent_switch_labels = true
+csharp_space_after_keywords_in_control_flow_statements = true
+csharp_space_before_open_square_brackets = false
+csharp_space_around_binary_operators = before_and_after
+csharp_preserve_single_line_statements = true
+
+# File naming conventions
+# Use PascalCase for type names
+dotnet_naming_rule.types_should_be_pascal_case.severity = suggestion
+dotnet_naming_rule.types_should_be_pascal_case.symbols = types
+dotnet_naming_rule.types_should_be_pascal_case.style = pascal_case
+
+dotnet_naming_symbols.types.applicable_kinds = class, struct, interface, enum
+dotnet_naming_symbols.types.applicable_accessibilities = *
+dotnet_naming_symbols.types.required_modifiers = *
+
+dotnet_naming_style.pascal_case.capitalization = pascal_case

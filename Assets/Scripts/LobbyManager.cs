@@ -7,13 +7,15 @@ using Unity.Services.Relay;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public enum LobbyState {
+public enum LobbyState
+{
     ModeSelect,
     HostWaiting,
     ClientJoining
 }
 
-public class LobbyManager : MonoBehaviour {
+public class LobbyManager : MonoBehaviour
+{
     public GameObject ModeSelectGroup;
     public GameObject StatusGroup;
     public TMP_Text StatusTb;
@@ -21,20 +23,24 @@ public class LobbyManager : MonoBehaviour {
 
     public LobbyState State;
 
-    async void Awake() {
+    async void Awake()
+    {
         await UnityServices.InitializeAsync();
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
     }
 
     // Start is called before the first frame update
-    void Start() {
+    void Start()
+    {
         ChangeState(LobbyState.ModeSelect);
     }
 
-    private void ChangeState(LobbyState state) {
+    private void ChangeState(LobbyState state)
+    {
         State = state;
 
-        switch (state) {
+        switch (state)
+        {
             case LobbyState.ModeSelect:
                 ModeSelectGroup.SetActive(true);
                 StatusGroup.SetActive(false);
@@ -50,7 +56,8 @@ public class LobbyManager : MonoBehaviour {
         }
     }
 
-    public async void HostGame() {
+    public async void HostGame()
+    {
         ChangeState(LobbyState.HostWaiting);
         Debug.LogError("Hosting game...");
 
@@ -59,23 +66,25 @@ public class LobbyManager : MonoBehaviour {
         StatusTb.text += " " + code;
 
         var transport = FindObjectOfType<UnityTransport>();
-        transport.SetHostRelayData(a.RelayServer.IpV4, (ushort) a.RelayServer.Port, a.AllocationIdBytes, a.Key, a.ConnectionData);
+        transport.SetHostRelayData(a.RelayServer.IpV4, (ushort)a.RelayServer.Port, a.AllocationIdBytes, a.Key, a.ConnectionData);
 
         NetworkManager.Singleton.StartHost();
 
-        NetworkManager.Singleton.OnClientConnectedCallback += (_) => {
+        NetworkManager.Singleton.OnClientConnectedCallback += (_) =>
+        {
             NetworkManager.Singleton.SceneManager.LoadScene("Game", LoadSceneMode.Single);
         };
     }
 
-    public async void JoinGame() {
+    public async void JoinGame()
+    {
         ChangeState(LobbyState.ClientJoining);
         Debug.LogError("Joining game...");
 
         var a = await RelayService.Instance.JoinAllocationAsync(JoinCodeInput.text);
 
         var transport = FindObjectOfType<UnityTransport>();
-        transport.SetClientRelayData(a.RelayServer.IpV4, (ushort) a.RelayServer.Port, a.AllocationIdBytes, a.Key, a.ConnectionData, a.HostConnectionData);
+        transport.SetClientRelayData(a.RelayServer.IpV4, (ushort)a.RelayServer.Port, a.AllocationIdBytes, a.Key, a.ConnectionData, a.HostConnectionData);
 
         NetworkManager.Singleton.StartClient();
     }

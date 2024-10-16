@@ -29,6 +29,18 @@ public class ClientManager : NetworkBehaviour
 
     bool clientInitialised = false;
 
+    bool TryGetDependecies()
+    {
+        HostManager = FindObjectOfType<HostManager>();
+        if (HostManager)
+        {
+            Store = HostManager.Store;
+            return true;
+        }
+
+        return false;
+    }
+
     void Initialise()
     {
         // Calculate the cell size
@@ -65,11 +77,12 @@ public class ClientManager : NetworkBehaviour
         // Check this is the client manager we own
         if (!IsOwner) return;
 
+        if (!HostManager && !TryGetDependecies()) return;
+
         // Check we have a valid host manager and store
-        if (HostManager == null || Store == null) return;
+        if (!HostManager.IsSpawned || !Store.IsSpawned) return;
 
         // Check the store has been initialised
-        Store = HostManager.Store;
         if (Store.Players.Value == null || Store.Players.Value.Count == 0) return;
 
         if (!clientInitialised)

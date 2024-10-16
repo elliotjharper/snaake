@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-
 using Unity.Netcode;
-
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -13,21 +11,11 @@ public class HostManager : NetworkBehaviour
     public GlobalConfig Config;
 
     private float timeSinceLastTick = 0;
+    private bool isStoreInitialised = false;
 
-    public override void OnNetworkSpawn()
+    void InitialiseStore()
     {
-        Debug.Log($"HostManager - OnNetworkSpawn - IsHost={NetworkManager.Singleton.IsHost}");
-        return;
-        var clientManagers = FindObjectsByType<ClientManager>(FindObjectsSortMode.None);
-
-        foreach (var clientManager in clientManagers)
-        {
-            if (clientManager.IsOwner)
-            {
-                clientManager.HostManager = this;
-                clientManager.Store = Store;
-            }
-        }
+        Debug.Log($"HostManager - InitialiseStore - IsHost={NetworkManager.Singleton.IsHost}");
 
         if (!NetworkManager.Singleton.IsHost) return;
 
@@ -62,12 +50,21 @@ public class HostManager : NetworkBehaviour
         {
             Store.FoodPosition.Value = Config.GetRandomPosition();
         }
+
+        isStoreInitialised = true;
     }
 
     // Update is called once per frame
     void Update()
     {
         if (!NetworkManager.Singleton.IsHost) return;
+
+        if (!Store.IsSpawned || !IsSpawned) return;
+
+        if (!isStoreInitialised)
+        {
+            InitialiseStore();
+        }
 
         timeSinceLastTick += Time.deltaTime;
 
@@ -154,7 +151,7 @@ public class HostManager : NetworkBehaviour
     {
         if (Store.Players.Value.All(p => !p.Alive))
         {
-            NetworkManager.Singleton.SceneManager.LoadScene("GameOver", LoadSceneMode.Single);
+            // NetworkManager.Singleton.SceneManager.LoadScene("GameOver", LoadSceneMode.Single);
         }
     }
 
